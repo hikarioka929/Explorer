@@ -69,9 +69,6 @@ class Map
     end
 end
 
-<<<<<<< HEAD
-# 実行するファイル名と実行中のファイル名が一緒だったら
-=======
 # 探検家クラス
 class Explorer
         #     UP    RIGHT  DOWN  LEFT
@@ -102,12 +99,43 @@ class Explorer
         @memo[xy][2] = false
         return xy
     end
+
+    def look_around(xy)
+        # 東西南北の座標を一覧にしてnext_xy_listに渡す
+        x,y = xy
+        next_xy_list = []
+        V.each do |vx,vy|
+            next_x = x + vx
+            next_y = y + vy
+            next_xy_list << [next_x, next_y]
+        end
+
+        # 移動可能な座標だけを抽出する
+        # すでにメモしてある座標は除外する
+        next_xy_list.select! do |x,y|
+            @map.valid?(x,y) and !@memo[[x,y]]
+        end
+
+        return next_xy_list
+    end
+
+    # 指定の座標一覧に対してメモを記入する(一歩進んだか,評価,訪問済みかどうか,今いる座標)
+    def piyo_memo(xy_list, pxy)
+        step = @memo[pxy][0] + 1
+        xy_list.each do |x,y|
+            score = @map.distance2goal(x,y) + step
+            memo = [step, score, true, pxy]
+            @memo[[x,y]] = memo
+        end
+        return @memo
+    end
 end
 
->>>>>>> d3ebeb604fad244a602322767722e65d2ef5a1ba
 if __FILE__ == $0 then
     piyoppa = Explorer.new
-    p piyoppa.move
+    xy = piyoppa.move
+    list = piyoppa.look_around(xy)
+    p piyoppa.piyo_memo(list,xy)
 end
 
 # __END__から始まる座標を呼び出してただ表示しているだけ
