@@ -60,7 +60,7 @@ class Map
         return true
     end
 
-    # 指定の座標からゴール座標までの直線距離を算出する(三平方の定理　c² = a² + b²)
+    # 指定の座標からゴール座標までの直線距離を算出する(三平方の定理を使う　c² = a² + b²)
     def distance2goal(x, y)
         hen1 = (@goal_xy[0] - x).abs ** 2
         hen2 = (@goal_xy[1] - y).abs ** 2
