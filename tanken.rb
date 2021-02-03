@@ -69,7 +69,7 @@ class Map
     end
 end
 
-# 実行するファイル名と実行中のファイル名が一緒だったら...
+# 実行するファイル名と実行中のファイル名が一緒だったら
 if __FILE__ == $0 then
     map = Map.new
     map.description
