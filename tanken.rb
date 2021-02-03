@@ -106,8 +106,8 @@ end
 
 >>>>>>> d3ebeb604fad244a602322767722e65d2ef5a1ba
 if __FILE__ == $0 then
-    hikari = Explorer.new
-    p hikari.move
+    piyoppa = Explorer.new
+    p piyoppa.move
 end
 
 # __END__から始まる座標を呼び出してただ表示しているだけ
