@@ -43,7 +43,7 @@ class Map
             @field[y][x] = "\e[32m*\e[0m"
         end
 
-        # 区切りのキリトリ線
+        # 区切りの切り取り線
         puts "-" * 30
         @field.each do |ar|
             puts ar.join
