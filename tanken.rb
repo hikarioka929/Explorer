@@ -9,6 +9,7 @@ class Map
     def initialize
         # 地図フィールド情報読み取り
         @field = DATA.read.split.map{|r|r.split("")}
+        @field_init = Marshal.load(Marshal.dump(@field))
         #地図の縦横サイズ
         @height = @field.size
         @width = @field[0].size
@@ -36,17 +37,22 @@ class Map
     end
 
     # 地図のフィールド情報を出力する
-    def display(route=[])
+    def display(route=[],goal=nil)
+        @field = Marshal.load(Marshal.dump(@field_init))
         # 経路座標に "*" を表示する
         route.each do |x,y|
             # 色をつけてる
             @field[y][x] = "\e[32m*\e[0m"
         end
-
-        # 区切りの切り取り線
-        puts "-" * 30
         @field.each do |ar|
             puts ar.join
+        end
+
+        # 標準出力をフラッシュして書き換える
+        if goal.nil? then
+            printf "\e[#{@height}A"
+            STDOUT.flush
+            sleep 0.2
         end
     end
 
@@ -129,21 +135,56 @@ class Explorer
         end
         return @memo
     end
+
+    # ゴールしたかどうか判定する
+    def goal?(xy)
+        return true if xy.nil?
+        return true if xy == @map.goal_xy
+        return false
+    end
+
+    # 指定の座標からスタート座標までの経路までの経路を返す
+    def check_route(xy,goal=nil)
+        route = []
+        until xy == @map.start_xy do
+            route << xy
+            xy = @memo[xy][3]
+        end
+        route.shift if route[0] == @map.goal_xy
+        route.pop if route[-1] == @map.start_xy
+
+        @map.display(route,goal)
+    end
 end
 
 if __FILE__ == $0 then
     piyoppa = Explorer.new
     xy = piyoppa.move
-    list = piyoppa.look_around(xy)
-    p piyoppa.piyo_memo(list,xy)
+
+    until piyoppa.goal?(xy) do
+        next_xy_list = piyoppa.look_around(xy)
+        piyoppa.piyo_memo(next_xy_list, xy)
+        xy = piyoppa.move
+        piyoppa.check_route(xy)
+    end
+    piyoppa.check_route(xy,true)
+    puts "piyoppa,ゴールしたってよ"
 end
 
 # __END__から始まる座標を呼び出してただ表示しているだけ
 puts DATA.read
 
 __END__
-S.#.G
-..#..
-.....
-..#..
-..#..
+
+S#..#.#.##.#.....
+...##......##.#..
+.###G.###.###.#..
+....###.#..#.....
+#.#......#...#...
+##..#.##.#..#..#.
+##.###...#.#..##.
+##....#.#...#...#
+##.####.#.#####.#
+###.....##..#....
+##..#.#.##.#..##.
+##.##.........#..
