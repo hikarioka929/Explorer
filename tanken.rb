@@ -69,14 +69,45 @@ class Map
     end
 end
 
+<<<<<<< HEAD
 # 実行するファイル名と実行中のファイル名が一緒だったら
+=======
+# 探検家クラス
+class Explorer
+        #     UP    RIGHT  DOWN  LEFT
+        V = [ [0,1], [1,0], [0,-1], [-1,0] ]
+
+    def initialize
+        # 地図を手に入れる
+        @map = Map.new
+        @map.description
+        @map.display
+
+        # スタート地点をメモして訪問先リストを登録する
+        @memo = {
+            @map.start_xy => [
+                0, # スタート地点からの実歩数
+                0, # ゴールに近いかどうかの評価(スコア)
+                true, # 移動予定か(移動済みならfalse)
+                [nil, nil] # 移動元座標
+            ]
+        }
+    end
+
+    # メモからゴールに近い座標を一つ取り出して
+    # その座標に移動する(移動済みとしてクローズする)
+    def move
+        arr = @memo.select{|_,v|v[2]}.sort_by{|_,v|v[1]}
+        xy = arr.to_h.keys.shift
+        @memo[xy][2] = false
+        return xy
+    end
+end
+
+>>>>>>> d3ebeb604fad244a602322767722e65d2ef5a1ba
 if __FILE__ == $0 then
-    map = Map.new
-    map.description
-    map.display
-    p map.distance2goal(0,0)
-    p map.distance2goal(0,4)
-    p map.distance2goal(4,4)
+    hikari = Explorer.new
+    p hikari.move
 end
 
 # __END__から始まる座標を呼び出してただ表示しているだけ
